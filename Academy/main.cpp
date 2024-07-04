@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
 using namespace std;
+using std::cout;
+using std::cin;
+using std::endl;
 
 #define HUMAN_TAKE_PARAMETERS const std::string& last_name, const std::string& first_name, int age
 #define HUMAN_GIVE_PARAMETERS last_name, first_name, age
@@ -148,7 +151,7 @@ public:
 	}
 
 	//		Constructors:
-	Teacher(HUMAN_TAKE_PARAMETERS, TEACHER_TAKE_PARAMETERS) :Human(HUMAN_GIVE_PARAMETERS)
+	Teacher(HUMAN_TAKE_PARAMETERS, TEACHER_TAKE_PARAMETERS) : Human(HUMAN_GIVE_PARAMETERS)
 	{
 		set_speciality(speciality);
 		set_experience(experience);
@@ -167,10 +170,56 @@ public:
 	}
 };
 
+#define GRADUATE_TAKE_PARAMETERS const std::string& theme, int readiness
+#define GRADUATE_GIVE_PARAMETERS theme, readiness
+
+class Graduate : public Student
+{
+	std::string theme;
+	int readiness;
+public:
+	const std::string& get_theme()const
+	{
+		return theme;
+	}
+	int get_readiness()const
+	{
+		return readiness;
+	}
+	void set_theme(const std::string& theme)
+	{
+		this->theme = theme;
+	}
+	void set_readiness(int readiness)
+	{
+		this->readiness = readiness;
+	}
+
+	//		Constructors:
+	Graduate(HUMAN_TAKE_PARAMETERS, STUDENT_TAKE_PARAMETERS, GRADUATE_TAKE_PARAMETERS) :Student(HUMAN_GIVE_PARAMETERS, STUDENT_GIVE_PARAMETERS)
+	{
+		set_theme(theme);
+		set_readiness(readiness);
+		cout << "GConstructor:\t" << this << endl;
+	}
+	~Graduate()
+	{
+		cout << "GDestructor:\t" << this << endl;
+	}
+
+	//		Methods:
+	void print()const
+	{
+		Student::print();
+		cout << theme << " " << readiness << "%" << endl;
+	}
+};
+
 void main()
 {
 	setlocale(LC_ALL, "");
 	cout << "HelloAcademy" << endl;
+
 	Human human("Richter", "Jeffrey", 40);
 	human.print();
 
@@ -179,4 +228,7 @@ void main()
 
 	Teacher teacher("White", "Walter", 50, "Chemistry", 25);
 	teacher.print();
+
+	Graduate graduate("Mercer", "Alex", 45, "Biology", "AA_123", 90, 90, "Biomutation", 100);
+	graduate.print();
 }
