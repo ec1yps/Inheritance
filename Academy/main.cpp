@@ -56,18 +56,14 @@ public:
 
 
 	//		Methods:
-	virtual void print()const
+	virtual std::ostream& print(std::ostream& os)const
 	{
-		cout << last_name << " " << first_name << " " << age << endl;
-	}
-	virtual std::ostream& os(std::ostream& os)const
-	{
-		return os << last_name << " " << first_name << " " << age << endl;
+		return os << last_name << " " << first_name << " " << age;
 	}
 };
-std::ostream& operator<<(std::ostream& os, const Human& human)
+std::ostream& operator<<(std::ostream& os, const Human& obj)
 {
-	return human.os(os);
+	return obj.print(os);
 }
 
 #define STUDENT_TAKE_PARAMETERS const std::string& speciality, const std::string& group, double rating, double attendance
@@ -136,10 +132,9 @@ public:
 	}
 
 	//		Methods:
-	void print()const override
+	std::ostream& print(std::ostream& os)const override
 	{
-		Human::print();
-		cout << speciality << " " << group << " " << rating << " " << attendance << endl;
+		return Human::print(os) << " " << speciality << " " << group << " " << rating << " " << attendance;
 	}
 };
 
@@ -181,10 +176,9 @@ public:
 	}
 
 	//		Methods:
-	void print()const override
+	std::ostream& print(std::ostream& os)const override
 	{
-		Human::print();
-		cout << speciality << " " << experience << endl;
+		return Human::print(os) << " " << speciality << " " << experience;
 	}
 };
 
@@ -221,28 +215,30 @@ public:
 	}
 
 	//		Methods:
-	void print()const override
+	std::ostream& print(std::ostream& os)const override
 	{
-		Student::print();
-		cout << theme << endl;
+		return Student::print(os) << " " << theme;
 	}
 };
 
 
-//std::ostream& operator<<(std::ostream& os, const Student& student)
-//{
-//	return os << student.get_last_name() << " " << student.get_first_name() << " " << student.get_age() << " " << student.get_speciality() 
-//		<< " " << student.get_group() << " " << student.get_rating() << " " << student.get_attandance() << endl;
-//}
-//std::ostream& operator<<(std::ostream& os, const Teacher& teacher)
-//{
-//	return os << teacher.get_last_name() << " " << teacher.get_first_name() << " " << teacher.get_age() << " " << teacher.get_speciality() << " " << teacher.get_experience() << endl;
-//}
-//std::ostream& operator<<(std::ostream& os, const Graduate& graduate)
-//{
-//	return os << graduate.get_last_name() << " " << graduate.get_first_name() << " " << graduate.get_age() << " " << graduate.get_speciality()
-//		<< " " << graduate.get_group() << " " << graduate.get_rating() << " " << graduate.get_attandance() << " " << graduate.get_theme() << endl;
-//}
+void Print(Human* group[], const int n)
+{
+	cout << delimiter << endl;
+	for (int i = 0; i < n; i++)
+	{
+		//group[i]->print();
+		cout << *group[i] << endl;
+		cout << delimiter << endl;
+	}
+}
+void Clear(Human* group[], const int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		delete group[i];
+	}
+}
 
 //#define INHERITANCE_1
 //#define INHERITANCE_2
@@ -292,15 +288,6 @@ void main()
 		new Teacher("Diaz", "Ricardo", 50, "Weapons distribution", 20)
 	};
 
-	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
-	{
-		//group[i]->print();
-		cout << *group[i] << endl;
-		cout << delimiter << endl;
-	}
-
-	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
-	{
-		delete group[i];
-	}
+	Print(group, sizeof(group) / sizeof(group[0]));
+	Clear(group, sizeof(group) / sizeof(group[0]));
 }
