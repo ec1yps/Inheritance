@@ -60,7 +60,15 @@ public:
 	{
 		cout << last_name << " " << first_name << " " << age << endl;
 	}
+	virtual std::ostream& os(std::ostream& os)const
+	{
+		return os << last_name << " " << first_name << " " << age << endl;
+	}
 };
+std::ostream& operator<<(std::ostream& os, const Human& human)
+{
+	return human.os(os);
+}
 
 #define STUDENT_TAKE_PARAMETERS const std::string& speciality, const std::string& group, double rating, double attendance
 #define STUDENT_GIVE_PARAMETERS speciality, group, rating, attendance
@@ -220,6 +228,22 @@ public:
 	}
 };
 
+
+//std::ostream& operator<<(std::ostream& os, const Student& student)
+//{
+//	return os << student.get_last_name() << " " << student.get_first_name() << " " << student.get_age() << " " << student.get_speciality() 
+//		<< " " << student.get_group() << " " << student.get_rating() << " " << student.get_attandance() << endl;
+//}
+//std::ostream& operator<<(std::ostream& os, const Teacher& teacher)
+//{
+//	return os << teacher.get_last_name() << " " << teacher.get_first_name() << " " << teacher.get_age() << " " << teacher.get_speciality() << " " << teacher.get_experience() << endl;
+//}
+//std::ostream& operator<<(std::ostream& os, const Graduate& graduate)
+//{
+//	return os << graduate.get_last_name() << " " << graduate.get_first_name() << " " << graduate.get_age() << " " << graduate.get_speciality()
+//		<< " " << graduate.get_group() << " " << graduate.get_rating() << " " << graduate.get_attandance() << " " << graduate.get_theme() << endl;
+//}
+
 //#define INHERITANCE_1
 //#define INHERITANCE_2
 
@@ -270,7 +294,8 @@ void main()
 
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
 	{
-		group[i]->print();
+		//group[i]->print();
+		cout << *group[i] << endl;
 		cout << delimiter << endl;
 	}
 
