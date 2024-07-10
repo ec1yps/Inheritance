@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 using namespace std;
 using std::cout;
@@ -288,6 +289,33 @@ void main()
 		new Teacher("Diaz", "Ricardo", 50, "Weapons distribution", 20)
 	};
 
+	std::ofstream fout;
+	fout.open("File.txt", std::ios_base::app);
+	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
+	{
+		fout << *group[i] << endl;
+	}
+	fout.close();
+
 	Print(group, sizeof(group) / sizeof(group[0]));
 	Clear(group, sizeof(group) / sizeof(group[0]));
+
+	cout << delimiter << endl;
+	
+	std::ifstream fin("File.txt");
+	if (fin.is_open())
+	{
+		while (!fin.eof())
+		{
+			const int SIZE = 1024;
+			char buffer[SIZE]{};
+			fin.getline(buffer, SIZE);
+			cout << buffer << endl;
+		}
+		fin.close();
+	}
+	else
+	{
+		std::cerr << "Error: File not found" << endl;
+	}
 }

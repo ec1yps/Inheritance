@@ -28,13 +28,12 @@ void main()
 	{
 		while (!fin.eof())
 		{
-			const int SIZE = 1024000;
+			const int SIZE = 102400;
 			char buffer[SIZE]{};
 			//fin >> buffer;
 			fin.getline(buffer, SIZE);
 			cout << buffer << endl;
 		}
-
 		fin.close();
 	}
 	else
