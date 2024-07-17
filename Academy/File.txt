@@ -1,5 +1,0 @@
-Pinkman Jessie 20 Chemistry WW_220 95 90
-White Walter 50 Chemistry 25
-Mercer Alex 45 Biology AA_123 90 90 Biomutation
-Vercetty Tommy 30 Theft Vice 95 98
-Diaz Ricardo 50 Weapons distribution 20
