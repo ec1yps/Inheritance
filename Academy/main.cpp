@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <fstream>
 #include <string>
 using namespace std;
@@ -65,7 +65,7 @@ public:
 	{
 		return os << last_name << " " << first_name << " " << age;
 	}
-	virtual std::ofstream& print(std::ofstream & ofs) const
+	virtual std::ofstream& print(std::ofstream& ofs) const
 	{
 		ofs.width(TYPE_WIDTH);
 		ofs << std::left;
@@ -80,6 +80,11 @@ public:
 
 		return ofs;
 	}
+	virtual std::ifstream& write(std::ifstream& ifs)
+	{
+		ifs >> last_name >> first_name >> age;
+		return ifs;
+	}
 };
 std::ostream& operator<<(std::ostream& os, const Human& obj)
 {
@@ -88,6 +93,10 @@ std::ostream& operator<<(std::ostream& os, const Human& obj)
 std::ofstream& operator<<(std::ofstream& ofs, const Human& obj)
 {
 	return obj.print(ofs);
+}
+std::ifstream& operator>>(std::ifstream& ifs, Human& type)
+{
+	return type.write(ifs);
 }
 
 #define STUDENT_TAKE_PARAMETERS const std::string& speciality, const std::string& group, double rating, double attendance
@@ -138,7 +147,7 @@ public:
 	}
 
 	//		Constructors:
-	Student (HUMAN_TAKE_PARAMETERS, STUDENT_TAKE_PARAMETERS):Human(HUMAN_GIVE_PARAMETERS)
+	Student(HUMAN_TAKE_PARAMETERS, STUDENT_TAKE_PARAMETERS) :Human(HUMAN_GIVE_PARAMETERS)
 	{
 		set_speciality(speciality);
 		set_group(group);
@@ -178,6 +187,12 @@ public:
 		ofs << attendance;
 
 		return ofs;
+	}
+	std::ifstream& write(std::ifstream& ifs) override
+	{
+		Human::write(ifs);
+		ifs >> speciality >> group >> rating >> attendance;
+		return ifs;
 	}
 };
 
@@ -229,11 +244,17 @@ public:
 	{
 		Human::print(ofs);
 		ofs.width(SPECIALITY_WIDTH);
-		ofs<< speciality;
+		ofs << speciality;
 		ofs.width(EXPERIENCE_WIDTH);
 		ofs << experience;
 
 		return ofs;
+	}
+	std::ifstream& write(std::ifstream& ifs) override
+	{
+		Human::write(ifs);
+		ifs >> speciality >> experience;
+		return ifs;
 	}
 };
 
@@ -283,6 +304,12 @@ public:
 
 		return ofs;
 	}
+	std::ifstream& write(std::ifstream& ifs) override
+	{
+		Student::write(ifs);
+		ifs >> theme;
+		return ifs;
+	}
 };
 
 
@@ -312,6 +339,8 @@ void Save(Human* group[], const int n, const std::string filename)
 		fout << *group[i] << endl;
 	}
 	fout.close();
+	std::string cmd = "notepad" + filename;
+	system(cmd.c_str());
 }
 Human** Load(const std::string& filename, int& n)
 {
@@ -319,7 +348,7 @@ Human** Load(const std::string& filename, int& n)
 	std::ifstream fin(filename);
 	if (fin.is_open())
 	{
-		//1) Âû÷èñëåíèå ðàçìåðà ôàéëà (êîëè÷åñòâî çàïèñåé â ôàéëå):
+		//1) Ð’Ñ‹Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ðµ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð° Ñ„Ð°Ð¹Ð»Ð° (ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð·Ð°Ð¿Ð¸ÑÐµÐ¹ Ð² Ñ„Ð°Ð¹Ð»Ðµ):
 		n = 0;
 		while (!fin.eof())
 		{
@@ -333,26 +362,32 @@ Human** Load(const std::string& filename, int& n)
 				)continue;
 			n++;
 		}
-		cout << "Êîëè÷åñòâî çàïèñåé â ôàéëå: " << n << endl;
+		cout << "ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð·Ð°Ð¿Ð¸ÑÐµÐ¹ Ð² Ñ„Ð°Ð¹Ð»Ðµ: " << n << endl;
 
-		//2) Âûäåëÿåì ïàìÿòü äëÿ ãðóïïû:
+		//2) Ð’Ñ‹Ð´ÐµÐ»ÑÐµÐ¼ Ð¿Ð°Ð¼ÑÑ‚ÑŒ Ð´Ð»Ñ Ð³Ñ€ÑƒÐ¿Ð¿Ñ‹:
 		group = new Human * [n] {};
 
-		//3) Âîçâðàùàåìñÿ â íà÷àëî ôàéëà äëÿ òîãî ÷òîáû ïðî÷èòàòü ñîäåðæèìîå â ýòîì ôàéëå:
-		cout << "Ïîçèöèÿ êóðñîðà íà ÷òåíèå: " << fin.tellg() << endl;
+		//3) Ð’Ð¾Ð·Ð²Ñ€Ð°Ñ‰Ð°ÐµÐ¼ÑÑ Ð² Ð½Ð°Ñ‡Ð°Ð»Ð¾ Ñ„Ð°Ð¹Ð»Ð° Ð´Ð»Ñ Ñ‚Ð¾Ð³Ð¾ Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¿Ñ€Ð¾Ñ‡Ð¸Ñ‚Ð°Ñ‚ÑŒ ÑÐ¾Ð´ÐµÑ€Ð¶Ð¸Ð¼Ð¾Ðµ Ð² ÑÑ‚Ð¾Ð¼ Ñ„Ð°Ð¹Ð»Ðµ:
+		cout << "ÐŸÐ¾Ð·Ð¸Ñ†Ð¸Ñ ÐºÑƒÑ€ÑÐ¾Ñ€Ð° Ð½Ð° Ñ‡Ñ‚ÐµÐ½Ð¸Ðµ: " << fin.tellg() << endl;
 		fin.clear();
 		fin.seekg(0);
-		cout << "Ïîçèöèÿ êóðñîðà íà ÷òåíèå: " << fin.tellg() << endl;
+		cout << "ÐŸÐ¾Ð·Ð¸Ñ†Ð¸Ñ ÐºÑƒÑ€ÑÐ¾Ñ€Ð° Ð½Ð° Ñ‡Ñ‚ÐµÐ½Ð¸Ðµ: " << fin.tellg() << endl;
 
-		//4) ×èòàåì ôàéë:
-		for (int i = 0; !fin.eof(); i++)
+		//4) Ð§Ð¸Ñ‚Ð°ÐµÐ¼ Ñ„Ð°Ð¹Ð»:
+		for (int i = 0; i < n; i++)
 		{
-			std::string type;
-			fin >> type;
-			std::string buffer;
-			std::getline(fin, buffer);
-
+				std::string type;
+				fin >> type;
+				if (type.find("Human:") != std::string::npos)
+					fin >> *(group[i] = new Human("", "", 0));
+				else if (type.find("Student:") != std::string::npos)
+					fin >> *(group[i] = new Student("", "", 0, "", "", 0, 0));
+				else if (type.find("Teacher:") != std::string::npos)
+					fin >> *(group[i] = new Teacher("", "", 0, "", 0));	
+				else if (type.find("Graduate:") != std::string::npos)
+					fin >> *(group[i] = new Graduate("", "", 0, "", "", 0, 0, ""));
 		}
+
 
 		fin.close();
 	}
@@ -365,8 +400,8 @@ Human** Load(const std::string& filename, int& n)
 
 //#define INHERITANCE_1
 //#define INHERITANCE_2
-#define SAVE_CHECK
-//#define LOAD_CHECK
+//#define SAVE_CHECK
+#define LOAD_CHECK
 
 void main()
 {
@@ -421,7 +456,14 @@ void main()
 
 #ifdef LOAD_CHECK
 	int n = 0;
+	int m = 0;
 	Human** group = Load("group.txt", n);
+
+	Print(group, n);
+	Clear(group, n);
+
+	system("group.txt");
+
 #endif // LOAD_CHECK
 
 }
