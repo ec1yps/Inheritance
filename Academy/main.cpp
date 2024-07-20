@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <string>
-using namespace std;
+#include <string.h>
 using std::cout;
 using std::cin;
 using std::endl;
@@ -80,7 +80,7 @@ public:
 
 		return ofs;
 	}
-	virtual std::ifstream& write(std::ifstream& ifs)
+	virtual std::ifstream& read(std::ifstream& ifs)
 	{
 		ifs >> last_name >> first_name >> age;
 		return ifs;
@@ -94,9 +94,9 @@ std::ofstream& operator<<(std::ofstream& ofs, const Human& obj)
 {
 	return obj.print(ofs);
 }
-std::ifstream& operator>>(std::ifstream& ifs, Human& type)
+std::ifstream& operator>>(std::ifstream& ifs, Human& obj)
 {
-	return type.write(ifs);
+	return obj.read(ifs);
 }
 
 #define STUDENT_TAKE_PARAMETERS const std::string& speciality, const std::string& group, double rating, double attendance
@@ -188,9 +188,9 @@ public:
 
 		return ofs;
 	}
-	std::ifstream& write(std::ifstream& ifs) override
+	std::ifstream& read(std::ifstream& ifs)override
 	{
-		Human::write(ifs);
+		Human::read(ifs);
 		ifs >> speciality >> group >> rating >> attendance;
 		return ifs;
 	}
@@ -250,10 +250,19 @@ public:
 
 		return ofs;
 	}
-	std::ifstream& write(std::ifstream& ifs) override
+	std::ifstream& read(std::ifstream& ifs)override
 	{
-		Human::write(ifs);
-		ifs >> speciality >> experience;
+		Human::read(ifs);
+		//ifs >> speciality >> experience;
+		char sz_speciality[SPECIALITY_WIDTH + 1]{};
+		ifs.read(sz_speciality, SPECIALITY_WIDTH);
+		for (int i = SPECIALITY_WIDTH - 2; sz_speciality[i] == ' '; i--) 
+			sz_speciality[i] = 0;
+		while (sz_speciality[0] == ' ') 
+			for (int i = 0; sz_speciality[i]; i++) 
+				sz_speciality[i] = sz_speciality[i + 1];
+		speciality = sz_speciality;
+		ifs >> experience;
 		return ifs;
 	}
 };
@@ -304,10 +313,11 @@ public:
 
 		return ofs;
 	}
-	std::ifstream& write(std::ifstream& ifs) override
+	std::ifstream& read(std::ifstream& ifs)override
 	{
-		Student::write(ifs);
-		ifs >> theme;
+		Student::read(ifs);
+		//ifs >> theme;
+		std::getline(ifs, theme);
 		return ifs;
 	}
 };
@@ -319,9 +329,13 @@ void Print(Human* group[], const int n)
 	for (int i = 0; i < n; i++)
 	{
 		//group[i]->print();
-		cout << *group[i] << endl;
-		cout << delimiter << endl;
+		if (group[i])
+		{
+			cout << *group[i] << endl;
+			cout << delimiter << endl;
+		}
 	}
+	cout << "Количество человек в группе: " << n << endl;
 }
 void Clear(Human* group[], const int n)
 {
@@ -342,6 +356,24 @@ void Save(Human* group[], const int n, const std::string filename)
 	std::string cmd = "notepad" + filename;
 	system(cmd.c_str());
 }
+
+Human* HumanFactory(const std::string& type)
+{
+	Human* human = nullptr;
+	if (type == "Human:") human = new Human("", "", 0);
+	if (type == "Teacher:") human = new Teacher("", "", 0, "", 0);
+	if (type == "Student:") human = new Student("", "", 0, "", "", 0, 0);
+	if (type == "Graduate:") human = new Graduate("", "", 0, "", "", 0, 0, "");
+	return human;
+}
+bool NotAppropriateType(const std::string& buffer)
+{
+	return buffer.find("Human:") == std::string::npos &&
+			buffer.find("Student:") == std::string::npos &&
+			buffer.find("Teacher:") == std::string::npos &&
+			buffer.find("Graduate:") == std::string::npos;
+}
+
 Human** Load(const std::string& filename, int& n)
 {
 	Human** group = nullptr;
@@ -354,18 +386,13 @@ Human** Load(const std::string& filename, int& n)
 		{
 			std::string buffer;
 			std::getline(fin, buffer);
-			if (
-				buffer.find("Human:") == std::string::npos &&
-				buffer.find("Student:") == std::string::npos &&
-				buffer.find("Teacher:") == std::string::npos &&
-				buffer.find("Graduate:") == std::string::npos
-				)continue;
+			if (NotAppropriateType(buffer)) continue;
 			n++;
 		}
 		cout << "Количество записей в файле: " << n << endl;
 
 		//2) Выделяем память для группы:
-		group = new Human * [n] {};
+		group = new Human*[n] {};
 
 		//3) Возвращаемся в начало файла для того чтобы прочитать содержимое в этом файле:
 		cout << "Позиция курсора на чтение: " << fin.tellg() << endl;
@@ -378,16 +405,20 @@ Human** Load(const std::string& filename, int& n)
 		{
 				std::string type;
 				fin >> type;
-				if (type.find("Human:") != std::string::npos)
+				if (NotAppropriateType(type)) continue;
+				group[i] = HumanFactory(type);
+				if (group[i])
+					fin >> *group[i];
+
+				/*if (type.find("Human:") != std::string::npos)
 					fin >> *(group[i] = new Human("", "", 0));
 				else if (type.find("Student:") != std::string::npos)
 					fin >> *(group[i] = new Student("", "", 0, "", "", 0, 0));
 				else if (type.find("Teacher:") != std::string::npos)
 					fin >> *(group[i] = new Teacher("", "", 0, "", 0));	
 				else if (type.find("Graduate:") != std::string::npos)
-					fin >> *(group[i] = new Graduate("", "", 0, "", "", 0, 0, ""));
+					fin >> *(group[i] = new Graduate("", "", 0, "", "", 0, 0, ""));*/
 		}
-
 
 		fin.close();
 	}
@@ -456,14 +487,12 @@ void main()
 
 #ifdef LOAD_CHECK
 	int n = 0;
-	int m = 0;
 	Human** group = Load("group.txt", n);
 
 	Print(group, n);
 	Clear(group, n);
 
 	system("group.txt");
-
 #endif // LOAD_CHECK
 
 }
