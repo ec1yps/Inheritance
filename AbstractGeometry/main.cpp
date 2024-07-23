@@ -1,4 +1,4 @@
-#include <Windows.h>
+ï»¿#include <Windows.h>
 #include <iostream>
 using namespace std;
 
@@ -24,8 +24,8 @@ namespace Geometry
 		virtual ~Shape() {}
 		virtual void info()const
 		{
-			cout << "Ïëîùàäü ôèãóðû: " << get_area() << endl;
-			cout << "Ïåðèìåòð ôèãóðû: " << get_perimeter() << endl;
+			cout << "ÐŸÐ»Ð¾Ñ‰Ð°Ð´ÑŒ Ñ„Ð¸Ð³ÑƒÑ€Ñ‹: " << get_area() << endl;
+			cout << "ÐŸÐµÑ€Ð¸Ð¼ÐµÑ‚Ñ€ Ñ„Ð¸Ð³ÑƒÑ€Ñ‹: " << get_perimeter() << endl;
 			draw();
 		}
 	};
@@ -74,7 +74,7 @@ namespace Geometry
 		void info()const override
 		{
 			cout << typeid(*this).name() << endl;
-			cout << "Äëèíà ñòîðîíû: " << get_side() << endl;
+			cout << "Ð”Ð»Ð¸Ð½Ð° ÑÑ‚Ð¾Ñ€Ð¾Ð½Ñ‹: " << get_side() << endl;
 			Shape::info();
 		}
 	};
@@ -118,26 +118,26 @@ namespace Geometry
 		}
 		void draw()const override
 		{
-			//1) Ïîóë÷àåì îêíî êîíñîëè:
-			//HWND hwnd = GetConsoleWindow(); //Ôóíêöèÿ GetConsoleWindow() ïîëó÷àåò îêíî êîíñîëè
+			//1) ÐŸÐ¾ÑƒÐ»Ñ‡Ð°ÐµÐ¼ Ð¾ÐºÐ½Ð¾ ÐºÐ¾Ð½ÑÐ¾Ð»Ð¸:
+			//HWND hwnd = GetConsoleWindow(); //Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ GetConsoleWindow() Ð¿Ð¾Ð»ÑƒÑ‡Ð°ÐµÑ‚ Ð¾ÐºÐ½Ð¾ ÐºÐ¾Ð½ÑÐ¾Ð»Ð¸
 			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
 
-			//2) Äëÿ òîãî ÷òîáû ðèñîâàòü, íóæåí êîíòåêñò óñòðîéñòâà (Device Context), êîòîðûé åñòü ó êàæäîãî îêíà:
-				//Êîíòåêñò óñòðîéñòâà ìîæíî ïîëó÷èòü ñ ïîìîùüþ ôóíêöèè GetDC()
-			HDC hdc = GetDC(hwnd); //ïîëó÷àåì êîíòåêñò îêíà êîíñîëè
+			//2) Ð”Ð»Ñ Ñ‚Ð¾Ð³Ð¾ Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ñ€Ð¸ÑÐ¾Ð²Ð°Ñ‚ÑŒ, Ð½ÑƒÐ¶ÐµÐ½ ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚ ÑƒÑÑ‚Ñ€Ð¾Ð¹ÑÑ‚Ð²Ð° (Device Context), ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ð¹ ÐµÑÑ‚ÑŒ Ñƒ ÐºÐ°Ð¶Ð´Ð¾Ð³Ð¾ Ð¾ÐºÐ½Ð°:
+				//ÐšÐ¾Ð½Ñ‚ÐµÐºÑÑ‚ ÑƒÑÑ‚Ñ€Ð¾Ð¹ÑÑ‚Ð²Ð° Ð¼Ð¾Ð¶Ð½Ð¾ Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ñ Ð¿Ð¾Ð¼Ð¾Ñ‰ÑŒÑŽ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ GetDC()
+			HDC hdc = GetDC(hwnd); //Ð¿Ð¾Ð»ÑƒÑ‡Ð°ÐµÐ¼ ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚ Ð¾ÐºÐ½Ð° ÐºÐ¾Ð½ÑÐ¾Ð»Ð¸
 
-			//3) Òåïåðü íóæíî òî, ÷åì áóäåì ðèñîâàòü:
-			HPEN hPen = CreatePen(PS_SOLID, 5, color);	//hPen - ðèñóåò êîíòóð ôèãóðû
-			HBRUSH hBrush = CreateSolidBrush(color);	//hBrush - ðèñóåò çàëèâêó ôèãóðû
+			//3) Ð¢ÐµÐ¿ÐµÑ€ÑŒ Ð½ÑƒÐ¶Ð½Ð¾ Ñ‚Ð¾, Ñ‡ÐµÐ¼ Ð±ÑƒÐ´ÐµÐ¼ Ñ€Ð¸ÑÐ¾Ð²Ð°Ñ‚ÑŒ:
+			HPEN hPen = CreatePen(PS_SOLID, 5, color);	//hPen - Ñ€Ð¸ÑÑƒÐµÑ‚ ÐºÐ¾Ð½Ñ‚ÑƒÑ€ Ñ„Ð¸Ð³ÑƒÑ€Ñ‹
+			HBRUSH hBrush = CreateSolidBrush(color);	//hBrush - Ñ€Ð¸ÑÑƒÐµÑ‚ Ð·Ð°Ð»Ð¸Ð²ÐºÑƒ Ñ„Ð¸Ð³ÑƒÑ€Ñ‹
 
-			//4) Âûáèðàåì, ÷åì è íà ÷åì ìû áóäåì ðèñîâàòü:
+			//4) Ð’Ñ‹Ð±Ð¸Ñ€Ð°ÐµÐ¼, Ñ‡ÐµÐ¼ Ð¸ Ð½Ð° Ñ‡ÐµÐ¼ Ð¼Ñ‹ Ð±ÑƒÐ´ÐµÐ¼ Ñ€Ð¸ÑÐ¾Ð²Ð°Ñ‚ÑŒ:
 			SelectObject(hdc, hPen);
 			SelectObject(hdc, hBrush);
 
-			//5) Ðèñóåì ôèãóðó:
+			//5) Ð Ð¸ÑÑƒÐµÐ¼ Ñ„Ð¸Ð³ÑƒÑ€Ñƒ:
 			::Rectangle(hdc, 500, 100, 900, 300);
 
-			//6) Îñâîáîæäàåì ïàìÿòü:
+			//6) ÐžÑÐ²Ð¾Ð±Ð¾Ð¶Ð´Ð°ÐµÐ¼ Ð¿Ð°Ð¼ÑÑ‚ÑŒ:
 			DeleteObject(hBrush);
 			DeleteObject(hPen);
 
@@ -146,8 +146,142 @@ namespace Geometry
 		void info()const override
 		{
 			cout << typeid(*this).name() << endl;
-			cout << "Øèðèíà ïðÿìîóãîëüíèêà: " << get_width() << endl;
-			cout << "Âûñîòà ïðÿìîóãîëüíèêà: " << get_height() << endl;
+			cout << "Ð¨Ð¸Ñ€Ð¸Ð½Ð° Ð¿Ñ€ÑÐ¼Ð¾ÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ°: " << get_width() << endl;
+			cout << "Ð’Ñ‹ÑÐ¾Ñ‚Ð° Ð¿Ñ€ÑÐ¼Ð¾ÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ°: " << get_height() << endl;
+			Shape::info();
+		}
+	};
+
+	class Triangle :public Shape
+	{
+		double aSide;
+		double bSide;
+		double cSide;
+	public:
+		Triangle(double aSide, double bSide, double cSide, Color color) :Shape(color)
+		{
+			set_aSide(aSide);
+			set_bSide(bSide);
+			set_cSide(cSide);
+		}
+		~Triangle() {}
+
+		void set_aSide(double aSide)
+		{
+			this->aSide = aSide;
+		}
+		void set_bSide(double bSide)
+		{
+			this->bSide = bSide;
+		}
+		void set_cSide(double cSide)
+		{
+			this->cSide = cSide;
+		}
+		double get_aSide()const
+		{
+			return aSide;
+		}
+		double get_bSide()const
+		{
+			return bSide;
+		}
+		double get_cSide()const
+		{
+			return cSide;
+		}
+
+		double get_area()const override
+		{
+			double p = get_perimeter() / 2;
+			
+			return sqrt(p * (p - aSide) * (p - bSide) * (p - cSide));
+		}
+		double get_perimeter()const override
+		{
+			return aSide + bSide + cSide;
+		}
+		void draw()const override
+		{
+			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
+
+			HDC hdc = GetDC(hwnd);
+
+			HPEN hPen = CreatePen(PS_SOLID, 5, color);
+			HBRUSH hBrush = CreateSolidBrush(color);
+
+			SelectObject(hdc, hPen);
+			SelectObject(hdc, hBrush);
+
+			const POINT poligon[6]{ 500, 600, 600, 400, 900, 600 };
+
+			::Polygon(hdc, poligon, 3);
+
+			DeleteObject(hBrush);
+			DeleteObject(hPen);
+
+			ReleaseDC(hwnd, hdc);
+		}
+		void info()const override
+		{
+			cout << typeid(*this).name() << endl;
+			cout << "ÐŸÐµÑ€Ð²Ð°Ñ ÑÑ‚Ð¾Ñ€Ð¾Ð½Ð° Ñ‚Ñ€ÐµÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ°: " << aSide << endl;
+			cout << "Ð’Ñ‚Ð¾Ñ€Ð°Ñ ÑÑ‚Ð¾Ñ€Ð¾Ð½Ð° Ñ‚Ñ€ÐµÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ°: " << bSide << endl;
+			cout << "Ð¢Ñ€ÐµÑ‚ÑŒÑ ÑÑ‚Ð¾Ñ€Ð¾Ð½Ð° Ñ‚Ñ€ÐµÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ°: " << cSide << endl;
+			Shape::info();
+		}
+	};
+
+	class Circle :public Shape
+	{
+		double radius;
+	public:
+		Circle(double radius, Color color) :Shape(color)
+		{
+			set_radius(radius);
+		}
+		~Circle() {}
+
+		void set_radius(double radius)
+		{
+			this->radius = radius;
+		}
+		double get_radius()const
+		{
+			return radius;
+		}
+
+		double get_area()const override
+		{
+			return 3.14 * radius * radius;
+		}
+		double get_perimeter()const override
+		{
+			return 2 * 3.14 * radius;
+		}
+		void draw()const override
+		{
+			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
+
+			HDC hdc = GetDC(hwnd);
+
+			HPEN hPen = CreatePen(PS_SOLID, 5, color);
+			HBRUSH hBrush = CreateSolidBrush(color);
+
+			SelectObject(hdc, hPen);
+			SelectObject(hdc, hBrush);
+
+			::Ellipse(hdc, 1000, 100, 1200, 300);
+
+			DeleteObject(hBrush);
+			DeleteObject(hPen);
+
+			ReleaseDC(hwnd, hdc);
+		}
+		void info()const override
+		{
+			cout << typeid(*this).name() << endl;
+			cout << "Ð Ð°Ð´Ð¸ÑƒÑ ÐºÑ€ÑƒÐ³Ð°: " << radius << endl;
 			Shape::info();
 		}
 	};
@@ -159,12 +293,18 @@ void main()
 	//Shape shape(Color::CONSOLE_RED);
 
 	Geometry::Square square(5, Geometry::Color::CONSOLE_RED);
-	/*cout << "Äëèíà ñòîðîíû: " << square.get_side() << endl;
-	cout << "Ïëîùàäü êâàäðàòà: " << square.get_area() << endl;
-	cout << "Ïåðèìåòð êâàäðàòà: " << square.get_perimeter() << endl;
+	/*cout << "Ð”Ð»Ð¸Ð½Ð° ÑÑ‚Ð¾Ñ€Ð¾Ð½Ñ‹: " << square.get_side() << endl;
+	cout << "ÐŸÐ»Ð¾Ñ‰Ð°Ð´ÑŒ ÐºÐ²Ð°Ð´Ñ€Ð°Ñ‚Ð°: " << square.get_area() << endl;
+	cout << "ÐŸÐµÑ€Ð¸Ð¼ÐµÑ‚Ñ€ ÐºÐ²Ð°Ð´Ñ€Ð°Ñ‚Ð°: " << square.get_perimeter() << endl;
 	square.draw();*/
 	square.info();
 
 	Geometry::Rectangle rect(100, 50, Geometry::Color::CONSOLE_BLUE);
 	rect.info();
+
+	Geometry::Triangle tr(5, 4, 3, Geometry::Color::CONSOLE_GREEN);
+	tr.info();
+
+	Geometry::Circle circ(50, Geometry::Color::CONSOLE_RED);
+	circ.info();
 }
