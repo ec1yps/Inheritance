@@ -33,7 +33,9 @@ namespace Geometry
 		virtual void draw()const = 0;
 		Shape(SHAPE_TAKE_PARAMETERS) :color(color) 
 		{
+			if (start_x > 1000) start_x = 1000;
 			set_start_x(start_x);
+			if (start_y > 700) start_y = 700;
 			set_start_y(start_y);
 			set_line_width(line_width);
 		}
@@ -241,6 +243,30 @@ namespace Geometry
 			return cSide;
 		}
 
+		double get_max_side()const
+		{
+			if (aSide > bSide && aSide > cSide) return aSide;
+			if (bSide > aSide && bSide > cSide) return bSide;
+			if (cSide > aSide && cSide > bSide) return cSide;
+		}
+		double get_mid_side()const
+		{
+			if (aSide < bSide && aSide > cSide) return aSide;
+			if (bSide < aSide && bSide > cSide) return bSide;
+			if (cSide < aSide && cSide > bSide) return cSide;
+		}
+		double get_short_side()const
+		{
+			if (aSide < bSide && aSide < cSide) return aSide;
+			if (bSide < aSide && bSide < cSide) return bSide;
+			if (cSide < aSide && cSide < bSide) return cSide;
+		}
+		double get_height()const
+		{
+			if (get_max_side()) return 2 * get_area() / aSide;
+			if (get_max_side()) return 2 * get_area() / bSide;
+			if (get_max_side()) return 2 * get_area() / cSide;
+		}
 		double get_area()const override
 		{
 			double p = get_perimeter() / 2;
@@ -263,7 +289,7 @@ namespace Geometry
 			SelectObject(hdc, hPen);
 			SelectObject(hdc, hBrush);
 
-			const POINT poligon[6]{ 500, 600, 600, 400, 900, 600 };
+			const POINT poligon[6]{ start_x, start_y, start_x + sqrt(pow(get_short_side(), 2) + pow(get_height(), 2)), start_y + get_height(), start_x + get_max_side(), start_y };
 
 			::Polygon(hdc, poligon, 3);
 
@@ -288,6 +314,7 @@ namespace Geometry
 	public:
 		Circle(double radius, SHAPE_TAKE_PARAMETERS) :Shape(SHAPE_GIVE_PARAMETERS)
 		{
+			if (radius > 600) radius = 600;
 			set_radius(radius);
 		}
 		~Circle() {}
@@ -346,19 +373,19 @@ void main()
 	setlocale(LC_ALL, "");
 	//Shape shape(Color::CONSOLE_RED);
 
-	Geometry::Square square(50, 100, 100, 5, Geometry::Color::RED);
+	Geometry::Square square(120, 100, 100, 5, Geometry::Color::RED);
 	square.info();
 	/*cout << "Длина стороны: " << square.get_side() << endl;
 	cout << "Площадь квадрата: " << square.get_area() << endl;
 	cout << "Периметр квадрата: " << square.get_perimeter() << endl;
 	square.draw();*/
 
-	Geometry::Rectangle rect(100, 50, 200, 100, 10, Geometry::Color::BLUE);
+	Geometry::Rectangle rect(100, 50, 300, 100, 10, Geometry::Color::BLUE);
 	rect.info();
 	
-	Geometry::Circle circ(1000, 500, 100, 5, Geometry::Color::YELLOW);
+	Geometry::Circle circ(600, 700, 100, 5, Geometry::Color::YELLOW);
 	circ.info();
 
-	/*Geometry::Triangle tr(5, 4, 3, 100, 500, 5 Geometry::Color::GREEN);
-	tr.info();*/
+	Geometry::Triangle tr(500, 400, 300, 100, 500, 5, Geometry::Color::GREEN);
+	tr.info();
 }
