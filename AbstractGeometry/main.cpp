@@ -468,30 +468,31 @@ namespace Geometry
 
 	class IsoscalesTriangle :public Triangle
 	{
-		double edge;
 		double base;
+		double edge;
 	public:
-		double get_edge()const
-		{
-			return edge;
-		}
 		double get_base()const
 		{
 			return base;
 		}
-		void set_edge(double edge)
+		double get_edge()const
 		{
-			this->edge = filter_size(edge);
+			return edge;
 		}
 		void set_base(double base)
 		{
 			this->base = filter_size(base);
 		}
-
-		IsoscalesTriangle(double edge, double base, SHAPE_TAKE_PARAMETERS) :Triangle(SHAPE_GIVE_PARAMETERS)
+		void set_edge(double edge)
 		{
-			set_edge(edge);
+			this->edge = filter_size(edge);
+			if (this->edge <= base / 2) this->edge = base * 2 /3;
+		}
+
+		IsoscalesTriangle(double base, double edge, SHAPE_TAKE_PARAMETERS) :Triangle(SHAPE_GIVE_PARAMETERS)
+		{
 			set_base(base);
+			set_edge(edge);
 		}
 		~IsoscalesTriangle() {}
 
@@ -518,7 +519,7 @@ namespace Geometry
 			SelectObject(hdc, hPen);
 			SelectObject(hdc, hBrush);
 
-			const POINT polygon[6]{ start_x, start_y, start_x + base, start_y, start_x + base / 2, start_y + get_height() };
+			const POINT polygon[6]{ start_x, start_y, start_x + get_base(), start_y, start_x + get_base() / 2, start_y + get_height()};
 			::Polygon(hdc, polygon, 3);
 
 			DeleteObject(hBrush);
@@ -528,7 +529,7 @@ namespace Geometry
 		}
 		void info()const override
 		{
-			if (edge + edge < base || edge + base < edge)
+			/*if (edge + edge < base || edge + base < edge)
 			{
 				cout << "Треугольника не существует!" << endl;
 				count--;
@@ -540,8 +541,13 @@ namespace Geometry
 				cout << "Основание треугольника: " << get_base() << endl;
 
 				Triangle::info();
-			}
-				
+			}*/
+
+			cout << typeid(*this).name() << endl;
+			cout << "Ребра треугольника: " << get_edge() << endl;
+			cout << "Основание треугольника: " << get_base() << endl;
+
+			Triangle::info();
 		}
 	};
 
