@@ -17,8 +17,8 @@ namespace Geometry
 		CONSOLE_DEFAULT = 0x07
 	};
 
-#define SHAPE_TAKE_PARAMETERS unsigned int start_x, unsigned int start_y, unsigned int liner_width, Color color
-#define SHAPE_GIVE_PARAMETERS start_x, start_y, liner_width, color
+#define SHAPE_TAKE_PARAMETERS unsigned int start_x, unsigned int start_y, unsigned int line_width, Color color
+#define SHAPE_GIVE_PARAMETERS start_x, start_y, line_width, color
 
 	class Shape
 	{
@@ -199,7 +199,7 @@ namespace Geometry
 			HDC hdc = GetDC(hwnd); //получаем контекст окна консоли
 
 			//3) Теперь нужно то, чем будем рисовать:
-			HPEN hPen = CreatePen(PS_SOLID, 5, color);	//hPen - рисует контур фигуры
+			HPEN hPen = CreatePen(PS_SOLID, line_width, color);	//hPen - рисует контур фигуры
 			HBRUSH hBrush = CreateSolidBrush(color);	//hBrush - рисует заливку фигуры
 
 			//4) Выбираем, чем и на чем мы будем рисовать:
@@ -371,7 +371,7 @@ namespace Geometry
 
 			HDC hdc = GetDC(hwnd);
 
-			HPEN hPen = CreatePen(PS_SOLID, 5, color);
+			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
 			HBRUSH hBrush = CreateSolidBrush(color);
 
 			SelectObject(hdc, hPen);
@@ -443,7 +443,7 @@ namespace Geometry
 			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
 			HDC hdc = GetDC(hwnd);
 
-			HPEN hPen = CreatePen(PS_SOLID, 5, color);
+			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
 			HBRUSH hBrush = CreateSolidBrush(color);
 
 			SelectObject(hdc, hPen);
@@ -512,7 +512,7 @@ namespace Geometry
 			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
 			HDC hdc = GetDC(hwnd);
 
-			HPEN hPen = CreatePen(PS_SOLID, 5, color);
+			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
 			HBRUSH hBrush = CreateSolidBrush(color);
 
 			SelectObject(hdc, hPen);
@@ -601,7 +601,7 @@ namespace Geometry
 			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
 			HDC hdc = GetDC(hwnd);
 
-			HPEN hPen = CreatePen(PS_SOLID, 5, color);
+			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
 			HBRUSH hBrush = CreateSolidBrush(color);
 
 			SelectObject(hdc, hPen);
