@@ -40,7 +40,7 @@ namespace Geometry
 		virtual double get_area()const = 0;
 		virtual double get_perimeter()const = 0;
 		virtual void draw()const = 0;
-		Shape(SHAPE_TAKE_PARAMETERS) :color(color) 
+		Shape(SHAPE_TAKE_PARAMETERS) :color(color)
 		{
 			set_start_x(start_x);
 			set_start_y(start_y);
@@ -82,7 +82,7 @@ namespace Geometry
 		}
 		void set_line_width(unsigned int line_width)
 		{
-			this->line_width = 
+			this->line_width =
 				line_width < MIN_LINE_WIDTH ? MIN_LINE_WIDTH :
 				line_width > MAX_LINE_WIDTH ? MAX_LINE_WIDTH : line_width;
 		}
@@ -231,7 +231,7 @@ namespace Geometry
 		~Square() {}
 	};
 
-	class Triangle :public Shape
+	/*class Triangle :public Shape
 	{
 		double aSide;
 		double bSide;
@@ -297,7 +297,7 @@ namespace Geometry
 		double get_area()const override
 		{
 			double p = get_perimeter() / 2;
-			
+
 			return sqrt(p * (p - aSide) * (p - bSide) * (p - cSide));
 		}
 		double get_perimeter()const override
@@ -333,7 +333,7 @@ namespace Geometry
 			cout << "Третья сторона треугольника: " << cSide << endl;
 			Shape::info();
 		}
-	};
+	};*/
 
 	class Circle :public Shape
 	{
@@ -392,6 +392,256 @@ namespace Geometry
 			Shape::info();
 		}
 	};
+
+	class Triangle :public Shape
+	{
+	public:
+		Triangle(SHAPE_TAKE_PARAMETERS) :Shape(SHAPE_GIVE_PARAMETERS) {}
+		~Triangle() {}
+
+		virtual double get_height()const = 0;
+		void info()const override
+		{
+			cout << "Высота треугольника: " << get_height() << endl;
+			Shape::info();
+		}
+	};
+
+	class EquilateralTriangle :public Triangle
+	{
+		double side;
+	public:
+		double get_side()const
+		{
+			return side;
+		}
+		void set_side(double side)
+		{
+			this->side = filter_size(side);
+		}
+
+		EquilateralTriangle(double side, SHAPE_TAKE_PARAMETERS) :Triangle(SHAPE_GIVE_PARAMETERS)
+		{
+			set_side(side);
+		}
+		~EquilateralTriangle() {}
+
+		double get_height()const override
+		{
+			return side * sqrt(3) / 2;
+		}
+		double get_area()const override
+		{
+			return side * side * sqrt(3) / 4;
+		}
+		double get_perimeter()const override
+		{
+			return side * 3;
+		}
+		void draw()const override
+		{
+			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
+			HDC hdc = GetDC(hwnd);
+
+			HPEN hPen = CreatePen(PS_SOLID, 5, color);
+			HBRUSH hBrush = CreateSolidBrush(color);
+
+			SelectObject(hdc, hPen);
+			SelectObject(hdc, hBrush);
+
+			const POINT polygon[6]{ start_x, start_y, start_x + side, start_y, start_x + side / 2, start_y + get_height() };
+			::Polygon(hdc, polygon, 3);
+
+			DeleteObject(hBrush);
+			DeleteObject(hPen);
+
+			ReleaseDC(hwnd, hdc);
+		}
+		void info()const override
+		{
+			cout << typeid(*this).name() << endl;
+			cout << "Стороны равностороннего треугольника: " << get_side() << endl;
+
+			Triangle::info();
+		}
+	};
+
+	class IsoscalesTriangle :public Triangle
+	{
+		double edge;
+		double base;
+	public:
+		double get_edge()const
+		{
+			return edge;
+		}
+		double get_base()const
+		{
+			return base;
+		}
+		void set_edge(double edge)
+		{
+			this->edge = filter_size(edge);
+		}
+		void set_base(double base)
+		{
+			this->base = filter_size(base);
+		}
+
+		IsoscalesTriangle(double edge, double base, SHAPE_TAKE_PARAMETERS) :Triangle(SHAPE_GIVE_PARAMETERS)
+		{
+			set_edge(edge);
+			set_base(base);
+		}
+		~IsoscalesTriangle() {}
+
+		double get_height()const override
+		{
+			return sqrt(edge * edge - (base / 2) * (base / 2));
+		}
+		double get_area()const override
+		{
+			return base * get_height() / 2;
+		}
+		double get_perimeter()const override
+		{
+			return edge * 2 + base;
+		}
+		void draw()const override
+		{
+			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
+			HDC hdc = GetDC(hwnd);
+
+			HPEN hPen = CreatePen(PS_SOLID, 5, color);
+			HBRUSH hBrush = CreateSolidBrush(color);
+
+			SelectObject(hdc, hPen);
+			SelectObject(hdc, hBrush);
+
+			const POINT polygon[6]{ start_x, start_y, start_x + base, start_y, start_x + base / 2, start_y + get_height() };
+			::Polygon(hdc, polygon, 3);
+
+			DeleteObject(hBrush);
+			DeleteObject(hPen);
+
+			ReleaseDC(hwnd, hdc);
+		}
+		void info()const override
+		{
+			if (edge + edge < base || edge + base < edge)
+			{
+				cout << "Треугольника не существует!" << endl;
+				count--;
+			}
+			else
+			{
+				cout << typeid(*this).name() << endl;
+				cout << "Ребра треугольника: " << get_edge() << endl;
+				cout << "Основание треугольника: " << get_base() << endl;
+
+				Triangle::info();
+			}
+				
+		}
+	};
+
+	class RightTriangle :public Triangle
+	{
+		double hypotenuse;
+		double larger_cathetus;
+		double smaller_cathetus;
+	public:
+		double get_hypotenuse()const
+		{
+			return hypotenuse;
+		}
+		double get_larger_cathetus()const
+		{
+			return larger_cathetus;
+		}
+		double get_smaller_cathetus()const
+		{
+			return smaller_cathetus;
+		}
+		void set_hypotenuse(double hypotenuse)
+		{
+			this->hypotenuse = filter_size(hypotenuse);
+		}
+		void set_larger_cathetus(double larger_cathetus)
+		{
+			this->larger_cathetus = filter_size(larger_cathetus);
+		}
+		void set_smaller_cathetus(double smaller_cathetus)
+		{
+			this->smaller_cathetus = filter_size(smaller_cathetus);
+		}
+
+		RightTriangle(double hypotenuse, double larger_cathetus, double smaller_cathetus, SHAPE_TAKE_PARAMETERS) :Triangle(SHAPE_GIVE_PARAMETERS)
+		{
+			set_hypotenuse(hypotenuse);
+			set_larger_cathetus(larger_cathetus);
+			set_smaller_cathetus(smaller_cathetus);
+		}
+		~RightTriangle() {}
+
+		double get_height()const override
+		{
+			return larger_cathetus * smaller_cathetus / hypotenuse;
+		}
+		double get_area()const override
+		{
+			return larger_cathetus * smaller_cathetus / 2;
+		}
+		double get_perimeter()const override
+		{
+			return larger_cathetus + smaller_cathetus + hypotenuse;
+		}
+		void draw()const override
+		{
+			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
+			HDC hdc = GetDC(hwnd);
+
+			HPEN hPen = CreatePen(PS_SOLID, 5, color);
+			HBRUSH hBrush = CreateSolidBrush(color);
+
+			SelectObject(hdc, hPen);
+			SelectObject(hdc, hBrush);
+
+			const POINT polygon[6]{ start_x, start_y, start_x, start_y + get_larger_cathetus(), start_x + get_smaller_cathetus(), start_y };
+			::Polygon(hdc, polygon, 3);
+
+			DeleteObject(hBrush);
+			DeleteObject(hPen);
+
+			ReleaseDC(hwnd, hdc);
+		}
+		void info()const override
+		{
+			if (hypotenuse + larger_cathetus < smaller_cathetus || hypotenuse + smaller_cathetus < larger_cathetus || larger_cathetus + smaller_cathetus < hypotenuse)
+			{
+				cout << "Треугольника не существует!" << endl;
+				count--;
+			}
+			else
+			{
+				if (pow(hypotenuse, 2) == pow(larger_cathetus, 2) + pow(smaller_cathetus, 2))
+				{
+					cout << typeid(*this).name() << endl;
+					cout << "Гипотенуза: " << get_hypotenuse() << endl;
+					cout << "Больший катет: " << get_larger_cathetus() << endl;
+					cout << "Меньший катет: " << get_smaller_cathetus() << endl;
+
+					Triangle::info();
+				}
+				else
+				{
+					cout << "Треугольник не прямоугольный!" << endl;
+					count--;
+				}
+			}
+
+		}
+	};
 }
 
 void main()
@@ -406,14 +656,23 @@ void main()
 	cout << "Периметр квадрата: " << square.get_perimeter() << endl;
 	square.draw();*/
 
-	Geometry::Rectangle rect(100, 50, 300, 100, 10, Geometry::Color::BLUE);
+	Geometry::Rectangle rect(100, 50, 200, 100, 10, Geometry::Color::BLUE);
 	rect.info();
-	
-	Geometry::Circle circ(600, 700, 100, 5, Geometry::Color::YELLOW);
+
+	Geometry::Circle circ(60, 200, 300, 5, Geometry::Color::YELLOW);
 	circ.info();
 
-	Geometry::Triangle tr(500, 400, 300, 100, 500, 5, Geometry::Color::GREEN);
-	tr.info();
+	/*Geometry::Triangle tr(500, 400, 300, 100, 500, 5, Geometry::Color::GREEN);
+	tr.info();*/
+
+	Geometry::EquilateralTriangle eqtr(50, 100, 200, 5, Geometry::Color::BLUE);
+	eqtr.info();
+
+	Geometry::IsoscalesTriangle istr(100, 50, 100, 300, 5, Geometry::Color::GREEN);
+	istr.info();
+
+	Geometry::RightTriangle rtr(149, 140, 51, 100, 500, 5, Geometry::Color::RED);
+	rtr.info();
 
 	cout << "Количество фигур: " << circ.get_count() << endl;
 }
