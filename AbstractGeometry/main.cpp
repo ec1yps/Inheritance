@@ -39,7 +39,7 @@ namespace Geometry
 	public:
 		virtual double get_area()const = 0;
 		virtual double get_perimeter()const = 0;
-		virtual void draw()const = 0;
+		virtual void draw(HDC hdc)const = 0;
 		Shape(SHAPE_TAKE_PARAMETERS) :color(color)
 		{
 			set_start_x(start_x);
@@ -91,11 +91,30 @@ namespace Geometry
 			return size < MIN_SIZE ? MIN_SIZE : size > MAX_SIZE ? MAX_SIZE : size;
 		}
 
+		void Create_and_Release_draw()const
+		{
+			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
+
+			HDC hdc = GetDC(hwnd);
+
+			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
+			HBRUSH hBrush = CreateSolidBrush(color);
+
+			SelectObject(hdc, hPen);
+			SelectObject(hdc, hBrush);
+
+			draw(hdc);
+
+			DeleteObject(hBrush);
+			DeleteObject(hPen);
+
+			ReleaseDC(hwnd, hdc);
+		}
 		virtual void info()const
 		{
 			cout << "Площадь фигуры: " << get_area() << endl;
 			cout << "Периметр фигуры: " << get_perimeter() << endl;
-			draw();
+			Create_and_Release_draw();
 		}
 	};
 
@@ -188,32 +207,9 @@ namespace Geometry
 		{
 			return (width + height) * 2;
 		}
-		void draw()const override
+		void draw(HDC hdc)const override
 		{
-			//1) Поулчаем окно консоли:
-			//HWND hwnd = GetConsoleWindow(); //Функция GetConsoleWindow() получает окно консоли
-			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
-
-			//2) Для того чтобы рисовать, нужен контекст устройства (Device Context), который есть у каждого окна:
-				//Контекст устройства можно получить с помощью функции GetDC()
-			HDC hdc = GetDC(hwnd); //получаем контекст окна консоли
-
-			//3) Теперь нужно то, чем будем рисовать:
-			HPEN hPen = CreatePen(PS_SOLID, line_width, color);	//hPen - рисует контур фигуры
-			HBRUSH hBrush = CreateSolidBrush(color);	//hBrush - рисует заливку фигуры
-
-			//4) Выбираем, чем и на чем мы будем рисовать:
-			SelectObject(hdc, hPen);
-			SelectObject(hdc, hBrush);
-
-			//5) Рисуем фигуру:
 			::Rectangle(hdc, start_x, start_y, start_x + width, start_y + height);
-
-			//6) Освобождаем память:
-			DeleteObject(hBrush);
-			DeleteObject(hPen);
-
-			ReleaseDC(hwnd, hdc);
 		}
 		void info()const override
 		{
@@ -365,24 +361,9 @@ namespace Geometry
 		{
 			return M_PI * get_diameter();
 		}
-		void draw()const override
+		void draw(HDC hdc)const override
 		{
-			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
-
-			HDC hdc = GetDC(hwnd);
-
-			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
-			HBRUSH hBrush = CreateSolidBrush(color);
-
-			SelectObject(hdc, hPen);
-			SelectObject(hdc, hBrush);
-
 			::Ellipse(hdc, start_x, start_y, start_x + get_diameter(), start_y + get_diameter());
-
-			DeleteObject(hBrush);
-			DeleteObject(hPen);
-
-			ReleaseDC(hwnd, hdc);
 		}
 		void info()const override
 		{
@@ -438,24 +419,10 @@ namespace Geometry
 		{
 			return side * 3;
 		}
-		void draw()const override
+		void draw(HDC hdc)const override
 		{
-			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
-			HDC hdc = GetDC(hwnd);
-
-			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
-			HBRUSH hBrush = CreateSolidBrush(color);
-
-			SelectObject(hdc, hPen);
-			SelectObject(hdc, hBrush);
-
 			const POINT polygon[6]{ start_x, start_y, start_x + side, start_y, start_x + side / 2, start_y + get_height() };
 			::Polygon(hdc, polygon, 3);
-
-			DeleteObject(hBrush);
-			DeleteObject(hPen);
-
-			ReleaseDC(hwnd, hdc);
 		}
 		void info()const override
 		{
@@ -508,24 +475,10 @@ namespace Geometry
 		{
 			return edge * 2 + base;
 		}
-		void draw()const override
+		void draw(HDC hdc)const override
 		{
-			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
-			HDC hdc = GetDC(hwnd);
-
-			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
-			HBRUSH hBrush = CreateSolidBrush(color);
-
-			SelectObject(hdc, hPen);
-			SelectObject(hdc, hBrush);
-
 			const POINT polygon[6]{ start_x, start_y, start_x + get_base(), start_y, start_x + get_base() / 2, start_y + get_height()};
 			::Polygon(hdc, polygon, 3);
-
-			DeleteObject(hBrush);
-			DeleteObject(hPen);
-
-			ReleaseDC(hwnd, hdc);
 		}
 		void info()const override
 		{
@@ -602,24 +555,10 @@ namespace Geometry
 		{
 			return larger_cathetus + smaller_cathetus + hypotenuse;
 		}
-		void draw()const override
+		void draw(HDC hdc)const override
 		{
-			HWND hwnd = FindWindow(NULL, L"Inheritance - Microsoft Visual Studio");
-			HDC hdc = GetDC(hwnd);
-
-			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
-			HBRUSH hBrush = CreateSolidBrush(color);
-
-			SelectObject(hdc, hPen);
-			SelectObject(hdc, hBrush);
-
 			const POINT polygon[6]{ start_x, start_y, start_x, start_y + get_larger_cathetus(), start_x + get_smaller_cathetus(), start_y };
 			::Polygon(hdc, polygon, 3);
-
-			DeleteObject(hBrush);
-			DeleteObject(hPen);
-
-			ReleaseDC(hwnd, hdc);
 		}
 		void info()const override
 		{
